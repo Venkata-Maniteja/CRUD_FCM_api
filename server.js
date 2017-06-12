@@ -4,7 +4,8 @@ const MongoClient    = require('mongodb').MongoClient;
 const bodyParser     = require('body-parser');
 const app            = express();
 const port           = 8000;
-
+var http = require('http').Server(app);
+var io = require('./node_modules/socket.io')(http);
 const db = require('./config/db');
 
 
@@ -19,5 +20,21 @@ MongoClient.connect(db.url,(err,database) =>{
     app.listen(port,() => {
         console.log("We are live on"+port);
     });
+
+    app.get('/', function(req, res){
+    res.sendfile('index.html');
+    });
+
+    //Whenever someone connects this gets executed
+    io.on('connection', function(socket){
+      console.log('A user connected');
+
+      //Whenever someone disconnects this piece of code executed
+      socket.on('disconnect', function () {
+        console.log('A user disconnected');
+      });
+
+    });
+
 
 })
