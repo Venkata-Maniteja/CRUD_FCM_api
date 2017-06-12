@@ -31,7 +31,7 @@ MongoClient.connect(db.url,(err,database) =>{
 
       //Whenever someone disconnects this piece of code executed
       socket.on('disconnect', function () {
-        console.log('A user disconnected');
+        console.log('A user disconnectedd');
       });
 
     });
