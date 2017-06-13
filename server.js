@@ -5,11 +5,10 @@ const bodyParser     = require('body-parser');
 const app            = express();
 const port           = 8000;
 var http = require('http').Server(app);
-var io = require('./node_modules/socket.io')(http);
 const db = require('./config/db');
 
-
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 MongoClient.connect(db.url,(err,database) =>{
 
@@ -22,19 +21,7 @@ MongoClient.connect(db.url,(err,database) =>{
     });
 
     app.get('/', function(req, res){
-    res.sendfile('index.html');
+      res.sendFile(__dirname + '/index.html');
     });
 
-    //Whenever someone connects this gets executed
-    io.on('connection', function(socket){
-      console.log('A user connected');
-
-      //Whenever someone disconnects this piece of code executed
-      socket.on('disconnect', function () {
-        console.log('A user disconnectedd');
-      });
-
-    });
-
-
-})
+});
