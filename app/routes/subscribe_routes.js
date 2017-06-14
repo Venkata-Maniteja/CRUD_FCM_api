@@ -6,12 +6,36 @@ FCM = require('fcm-node');
 
 var SERVER_API_KEY='AAAAE1Lp-kk:APA91bE1yRSOwGq7C1PzUYntBsD0I3EoZCo0pGSyn_-UALTeRZMg7kDpowL2JNJNEPnrdR7GR2PrghVSop9AkCR1BtJmI5DFtgGgQQmIhYlCwt4NpidboRmugQyaRMrqWCcjH7fxdPyZ';//put your api key here
 
-var validDeviceRegistrationToken = 'cGhvMH6On-I:APA91bEZjztnOfHspioHQcmLqOrm5-jVrsjqCTpujLw4D2N1yPMtnjcQUdZMAeC1CuC83--q1uAXivPtoidO4o1PBdz_3hLnyksTM9rU7sPZsofxpP7xBFkc2a4gmqvX6UiB0WKf9kS_'; //put a valid device token here
+var validDeviceRegistrationToken = ''; //put a valid device token here
 
 
 
 
 var fcmCli= new FCM(SERVER_API_KEY);
+
+module.exports = function(app, db) {
+
+ //CREATE
+  app.post('/subscribe', (req, res) => {
+    // You'll create your note here.
+    console.log(req.body)
+
+    validDeviceRegistrationToken = req.body.ntoken;
+
+    console.log(validDeviceRegistrationToken);
+
+    fcmCli.send(payloadOK,function(err,resFcm){
+      if (!err) {
+          res.status(200).json({status:"ok"});
+      }else {
+          res.status(200).json({status:"error"});
+      }
+    });
+
+  });
+
+
+};
 
 var payloadOK = {
     to: validDeviceRegistrationToken,
@@ -51,6 +75,8 @@ var payloadMulticast = {
 };
 
 var callbackLog = function (sender, err, res) {
+
+
     console.log("\n__________________________________")
     console.log("\t"+sender);
     console.log("----------------------------------")
@@ -77,8 +103,3 @@ function sendMulticast(){
         callbackLog('sendMulticast',err,res);
     });
 }
-
-
-sendOK();
-sendMulticast();
-sendError();
